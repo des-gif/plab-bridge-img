@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PLAB Bridge IMG — Question Bank</title>
+<meta name="description" content="AI-powered PLAB 1 question bank for International Medical Graduates. Practice exam-style questions with instant feedback and UK clinical reasoning.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c282e;--teal:#127c87;--teal-d:#0b5860;--aqua:#5fb2bb;--mint:#e4f1f0;
+    --paper:#f6f9f8;--white:#fff;--gold:#dd9038;--line:#d6e3e2;--muted:#54696a;
+    --good:#1f7a52;--good-bg:#eaf8f1;--bad:#b0392c;--bad-bg:#fdeeec;
+    --serif:'Spectral',Georgia,serif;--sans:'IBM Plex Sans',system-ui,sans-serif;--mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.6}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.15;margin:0 0 12px}
+  h2{font-size:clamp(23px,3vw,32px)}h3{font-size:19px;font-weight:600}
+  a{color:var(--teal-d)}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px}
+  .mono{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-weight:600;font-size:15px;
+    padding:12px 22px;border-radius:8px;cursor:pointer;border:1.5px solid transparent;transition:.16s}
+  .btn-primary{background:var(--gold);color:#3a2406;border-color:var(--gold)}
+  .btn-primary:hover{background:#cd8128}
+  .btn-teal{background:var(--teal);color:#fff;border-color:var(--teal)}.btn-teal:hover{background:var(--teal-d)}
+  .btn-ghost{background:#fff;color:var(--teal-d);border-color:var(--line)}.btn-ghost:hover{border-color:var(--aqua)}
+  .btn:disabled{opacity:.55;cursor:default}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+
+  header{background:linear-gradient(120deg,#0c282e,#0e4a50);color:#eaf6f5;position:sticky;top:0;z-index:30}
+  .hbar{display:flex;align-items:center;justify-content:space-between;height:60px;gap:14px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:18px;font-weight:600;color:#fff;text-decoration:none}
+  .brand .mk{width:26px;height:26px}
+  .count{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#bfe0df;
+    background:rgba(255,255,255,.08);border:1px solid rgba(149,200,199,.3);padding:6px 12px;border-radius:7px;cursor:pointer}
+  nav.tabs{display:flex;gap:4px;background:#0a2329}
+  nav.tabs .wrap{display:flex;gap:4px;padding-top:0;padding-bottom:0}
+  .tab{flex:1;text-align:center;padding:13px 8px;font-size:14px;font-weight:600;color:#9cc3c2;background:none;border:none;
+    border-bottom:2.5px solid transparent;cursor:pointer;font-family:var(--sans)}
+  .tab.active{color:#fff;border-bottom-color:var(--gold)}
+  .tab:hover{color:#dfeeed}
+
+  main{padding:30px 0 60px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  select,input[type=date]{font-family:var(--sans);font-size:14.5px;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;box-shadow:0 1px 3px rgba(12,40,46,.05)}
+
+  .qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+  .pill{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-d);background:var(--mint);padding:5px 11px;border-radius:6px}
+  .pill.ai{background:#fdf1e0;color:#9a5d16}
+  .stem{font-size:16.5px;line-height:1.55;margin:6px 0 18px}
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;background:#fff;border:1.5px solid var(--line);
+    border-radius:10px;padding:13px 15px;font-family:var(--sans);font-size:15px;color:var(--ink);cursor:pointer;transition:.14s}
+  .opt:hover:not(:disabled){border-color:var(--aqua);background:#f4fbfa}
+  .opt .key{font-weight:600;color:var(--teal-d);flex:none;width:18px}
+  .opt.correct{border-color:var(--good);background:var(--good-bg)}.opt.correct .key{color:var(--good)}
+  .opt.wrong{border-color:var(--bad);background:var(--bad-bg)}.opt.wrong .key{color:var(--bad)}
+  .opt:disabled{cursor:default}
+  .fb{margin-top:18px;border-top:1px dashed var(--line);padding-top:16px;font-size:14.5px;line-height:1.6;display:none}
+  .fb.show{display:block}
+  .fb .verdict{font-weight:600;font-family:var(--serif);font-size:18px;margin-bottom:8px}
+  .fb .verdict.ok{color:var(--good)}.fb .verdict.no{color:var(--bad)}
+  .fb .ukp{margin-top:11px;padding:11px 13px;background:var(--mint);border-radius:8px;font-size:13.5px}
+  .fb .safety{margin-top:9px;padding:11px 13px;background:#fdeeec;border-radius:8px;font-size:13.5px;color:#7a2a20}
+  .ukp b,.safety b{color:inherit}
+  .qactions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .bk{background:none;border:1.5px solid var(--line);border-radius:8px;padding:11px 16px;cursor:pointer;font-family:var(--sans);font-weight:600;font-size:14px;color:var(--muted)}
+  .bk.on{color:var(--gold);border-color:var(--gold);background:#fdf6ec}
+
+  /* dashboard */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}
+  .stat .n{font-family:var(--serif);font-size:30px;color:var(--ink);line-height:1}
+  .stat .l{font-size:12.5px;color:var(--muted);margin-top:6px}
+  .topic-row{display:flex;align-items:center;gap:12px;margin:10px 0}
+  .topic-row .name{width:170px;font-size:14px;flex:none}
+  .bar{flex:1;height:9px;background:var(--mint);border-radius:6px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--teal);border-radius:6px}
+  .topic-row .pct{width:78px;text-align:right;font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .empty{text-align:center;color:var(--muted);padding:40px 20px}
+
+  footer{border-top:1px solid var(--line);background:#fff;padding:26px 0;font-size:12.5px;color:var(--muted)}
+  .disc{line-height:1.6;max-width:92ch}
+  @media(max-width:620px){.stats{grid-template-columns:repeat(2,1fr)}.topic-row .name{width:120px}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap hbar">
+    <a class="brand" href="/">
+      <svg class="mk" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#127c87"/><path d="M8 26c0-5 5.5-9 12-9s12 4 12 9" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/><path d="M16 26v-6M24 26v-6M20 26v-7" stroke="#9fd6d4" stroke-width="2" stroke-linecap="round"/></svg>
+      PLAB Bridge <span style="color:var(--aqua)">IMG</span>
+    </a>
+    <button class="count" id="countBtn" title="Set your exam date">Set exam date</button>
+  </div>
+  <nav class="tabs"><div class="wrap">
+    <button class="tab active" data-view="practice">Practice</button>
+    <button class="tab" data-view="mock">Mock</button>
+    <button class="tab" data-view="dashboard">Dashboard</button>
+    <button class="tab" data-view="bookmarks">Saved</button>
+  </div></nav>
+</header>
+
+<main><div class="wrap" id="app"></div></main>
+
+<footer><div class="wrap">
+  <p class="disc"><b>For revision only.</b> PLAB Bridge IMG is an independent education tool by Webb &amp; Hasham, developed with clinical input from a GP with over 20 years' NHS experience. Questions and explanations are illustrative, are not medical advice, and should be checked against current NICE / BNF / local guidance. Not affiliated with, endorsed by, or operated by the GMC or the NHS. Your progress is saved only in this browser.</p>
+</div></footer>
+
+<script>
+/* ---------- Starter question bank (standard, guideline-aligned, illustrative) ---------- */
+const QUESTIONS = [
+ {id:"q1",topic:"Emergency",stem:`A 24-year-old presents with a sudden, severe headache that peaked within seconds — the worst of their life. Neurological examination is normal. What is the most appropriate first-line investigation?`,
+  options:[{key:"A",text:"MRI brain"},{key:"B",text:"Non-contrast CT head"},{key:"C",text:"Lumbar puncture"},{key:"D",text:"Carotid Doppler"}],answer:"B",
+  explanation:`A thunderclap headache suggests subarachnoid haemorrhage; an urgent non-contrast CT head is first-line. A lumbar puncture is considered only if CT is negative and suspicion remains. MRI and Doppler are not the immediate test.`,
+  ukNote:`Follow your local thunderclap-headache pathway with early imaging and prompt senior review.`},
+
+ {id:"q2",topic:"Cardiology",stem:`A 68-year-old has 40 minutes of central crushing chest pain. ECG shows ST elevation in leads II, III and aVF. What is the most appropriate immediate reperfusion strategy if it can be delivered in time?`,
+  options:[{key:"A",text:"Primary percutaneous coronary intervention (PCI)"},{key:"B",text:"Exercise tolerance test"},{key:"C",text:"Reassure and discharge"},{key:"D",text:"Oral beta-blocker only"}],answer:"A",
+  explanation:`This is an inferior STEMI. Primary PCI is the preferred reperfusion strategy when it can be delivered promptly; fibrinolysis is the alternative if timely PCI is not available. Exercise testing is contraindicated in acute STEMI.`,
+  ukNote:`UK practice favours primary PCI when achievable within the recommended timeframe.`},
+
+ {id:"q3",topic:"Respiratory",stem:`A previously well 30-year-old has a productive cough, fever and focal crackles. They are not systemically unwell and the severity score is low, suitable for treatment at home. What is the first-line antibiotic?`,
+  options:[{key:"A",text:"Amoxicillin"},{key:"B",text:"Vancomycin"},{key:"C",text:"Ciprofloxacin"},{key:"D",text:"Co-amoxiclav"}],answer:"A",
+  explanation:`For low-severity community-acquired pneumonia managed in the community, amoxicillin is first-line (a macrolide is an alternative in penicillin allergy). Broad-spectrum agents are not first-line for low-severity disease.`,
+  ukNote:`Antibiotic choice follows local microbiology guidance and severity scoring (e.g. CRB-65).`},
+
+ {id:"q4",topic:"Endocrine",stem:`A 55-year-old is newly diagnosed with type 2 diabetes. There are no contraindications. What is the first-line drug treatment alongside lifestyle measures?`,
+  options:[{key:"A",text:"Insulin"},{key:"B",text:"Metformin"},{key:"C",text:"Gliclazide"},{key:"D",text:"Pioglitazone"}],answer:"B",
+  explanation:`Metformin is first-line in type 2 diabetes unless contraindicated. Sulfonylureas, pioglitazone and insulin are used in specific situations or later in the pathway.`,
+  ukNote:`Check renal function before and during metformin treatment.`},
+
+ {id:"q5",topic:"Gastroenterology",stem:`A 62-year-old reports progressive difficulty swallowing solids over two months and unintentional weight loss. What is the most appropriate first investigation?`,
+  options:[{key:"A",text:"Upper GI endoscopy"},{key:"B",text:"Barium swallow"},{key:"C",text:"Reassure and review in 6 months"},{key:"D",text:"Abdominal X-ray"}],answer:"A",
+  explanation:`Progressive dysphagia with weight loss is a red flag for oesophageal malignancy. Upper GI endoscopy allows direct visualisation and biopsy and is the appropriate first test.`,
+  ukNote:`This warrants an urgent suspected-cancer (two-week-wait) referral.`},
+
+ {id:"q6",topic:"Neurology",stem:`A 35-year-old develops unilateral facial weakness over a day, including the forehead, with no other neurological signs. They present within 72 hours. What is the most appropriate treatment?`,
+  options:[{key:"A",text:"Oral prednisolone"},{key:"B",text:"Aspirin"},{key:"C",text:"No treatment needed"},{key:"D",text:"Urgent thrombolysis"}],answer:"A",
+  explanation:`Forehead involvement indicates a lower motor neurone (Bell's) palsy rather than a stroke. Oral prednisolone started within 72 hours improves recovery. Eye protection is also important.`,
+  ukNote:`Sparing of the forehead would suggest an upper motor neurone lesion and a different (stroke) pathway.`},
+
+ {id:"q7",topic:"Surgery",stem:`A 45-year-old has right upper quadrant pain, fever and a positive Murphy's sign. What is the most appropriate first-line imaging?`,
+  options:[{key:"A",text:"Abdominal ultrasound"},{key:"B",text:"Plain abdominal X-ray"},{key:"C",text:"MRCP"},{key:"D",text:"CT angiogram"}],answer:"A",
+  explanation:`The picture suggests acute cholecystitis. Ultrasound is first-line to assess for gallstones, wall thickening and fluid. MRCP is used to evaluate the bile ducts when needed, not as the first test here.`,
+  ukNote:`Ultrasound is widely available and avoids ionising radiation.`},
+
+ {id:"q8",topic:"Paediatrics",stem:`A 2-year-old has a barking cough, hoarse voice and mild inspiratory stridor at rest but is otherwise stable. What is the most appropriate treatment?`,
+  options:[{key:"A",text:"Single dose of oral dexamethasone"},{key:"B",text:"Oral amoxicillin"},{key:"C",text:"Inhaled salbutamol"},{key:"D",text:"No treatment"}],answer:"A",
+  explanation:`This is croup. A single dose of oral dexamethasone reduces severity and is appropriate even in mild cases. Antibiotics and salbutamol do not treat the underlying viral laryngotracheitis.`,
+  ukNote:`Nebulised adrenaline and urgent senior help are reserved for severe airway compromise.`,
+  safety:`Worsening stridor, drooling or distress needs immediate senior and anaesthetic review.`},
+
+ {id:"q9",topic:"Paediatrics",stem:`A 4-year-old is febrile and unwell with a rapidly spreading non-blanching purpuric rash. What is the most important immediate action?`,
+  options:[{key:"A",text:"Give urgent parenteral antibiotics and arrange emergency admission"},{key:"B",text:"Prescribe oral antibiotics and review tomorrow"},{key:"C",text:"Give an antihistamine"},{key:"D",text:"Reassure — likely viral"}],answer:"A",
+  explanation:`A non-blanching rash with fever suggests meningococcal sepsis. Urgent parenteral antibiotics and emergency admission take priority; delay increases mortality.`,
+  ukNote:`In the community, give intramuscular benzylpenicillin (unless a true allergy) and call emergency services.`,
+  safety:`This is a medical emergency — do not wait for investigations before treating.`},
+
+ {id:"q10",topic:"Obstetrics & Gynaecology",stem:`A 30-week-pregnant woman has a blood pressure of 162/110 mmHg, a headache and proteinuria. Which antihypertensive is an appropriate first-line choice?`,
+  options:[{key:"A",text:"Labetalol"},{key:"B",text:"Ramipril"},{key:"C",text:"Bendroflumethiazide"},{key:"D",text:"Losartan"}],answer:"A",
+  explanation:`This is pre-eclampsia. Labetalol is a recognised first-line antihypertensive in pregnancy. ACE inhibitors (ramipril) and ARBs (losartan) are contraindicated in pregnancy due to fetal harm.`,
+  ukNote:`Severe pre-eclampsia needs urgent obstetric assessment and consideration of magnesium sulfate for seizure prophylaxis.`,
+  safety:`ACE inhibitors and ARBs must be avoided in pregnancy.`},
+
+ {id:"q11",topic:"Obstetrics & Gynaecology",stem:`Immediately after a vaginal delivery a woman has heavy ongoing bleeding and a soft, poorly contracted uterus. After uterine massage, what is the first-line uterotonic?`,
+  options:[{key:"A",text:"Oxytocin"},{key:"B",text:"Tranexamic acid alone"},{key:"C",text:"Misoprostol as sole agent"},{key:"D",text:"No medication — observe"}],answer:"A",
+  explanation:`This is uterine atony causing postpartum haemorrhage. After rubbing up a contraction, oxytocin is first-line. Tranexamic acid is an important adjunct but not the first uterotonic; other agents are used if bleeding continues.`,
+  ukNote:`Call for help early and manage with an ABC approach alongside drug treatment.`},
+
+ {id:"q12",topic:"Psychiatry",stem:`A 28-year-old has moderate depression affecting daily function and prefers medication. There are no contraindications. What is the most appropriate first-line drug class?`,
+  options:[{key:"A",text:"Selective serotonin reuptake inhibitor (SSRI)"},{key:"B",text:"Tricyclic antidepressant"},{key:"C",text:"Monoamine oxidase inhibitor"},{key:"D",text:"Benzodiazepine"}],answer:"A",
+  explanation:`An SSRI (e.g. sertraline) is first-line for moderate depression. TCAs and MAOIs are generally later options; benzodiazepines are not a treatment for depression.`,
+  ukNote:`Combine with psychological therapy where appropriate and review risk and response.`},
+
+ {id:"q13",topic:"Ethics & Professionalism",stem:`An adult with full mental capacity, who is a Jehovah's Witness, calmly declines a blood transfusion that you believe is clinically indicated. What is the most appropriate action?`,
+  options:[{key:"A",text:"Respect the refusal and explore alternatives"},{key:"B",text:"Transfuse anyway in their best interests"},{key:"C",text:"Ask the family to decide"},{key:"D",text:"Apply for a court order"}],answer:"A",
+  explanation:`A competent adult may refuse any treatment, even life-saving treatment. Their informed refusal must be respected; you should document it and consider alternatives. Overriding a capacitous refusal would be unlawful.`,
+  ukNote:`This reflects consent and capacity principles and GMC guidance on respecting autonomy.`},
+
+ {id:"q14",topic:"Patient Safety",stem:`A trust wants to reduce the risk of wrong-site surgery. Which measure is most effective as a system-level safeguard?`,
+  options:[{key:"A",text:"Use the WHO Surgical Safety Checklist"},{key:"B",text:"Ask surgeons to work faster"},{key:"C",text:"Discipline individuals after errors"},{key:"D",text:"Schedule longer operating lists"}],answer:"A",
+  explanation:`Wrong-site surgery is a 'never event'. Structured team checks such as the WHO Surgical Safety Checklist (including the time-out and site marking) are evidence-based system safeguards. Blaming individuals does not fix system weaknesses.`,
+  ukNote:`Safety culture favours reliable checklists and reporting over individual blame.`},
+
+ {id:"q15",topic:"Pharmacology",stem:`A patient taking warfarin presents with major active bleeding and a high INR. What is the most appropriate reversal?`,
+  options:[{key:"A",text:"Prothrombin complex concentrate and intravenous vitamin K"},{key:"B",text:"Protamine sulfate"},{key:"C",text:"Tranexamic acid alone"},{key:"D",text:"Withhold warfarin only"}],answer:"A",
+  explanation:`For major bleeding on warfarin, give prothrombin complex concentrate (rapid factor replacement) plus intravenous vitamin K. Protamine reverses heparin, not warfarin. Simply withholding warfarin is too slow in major bleeding.`,
+  ukNote:`Follow local anticoagulation-reversal and major-haemorrhage protocols.`,
+  safety:`Major haemorrhage needs urgent senior and haematology input.`},
+
+ {id:"q16",topic:"Public Health",stem:`A healthcare worker sustains a needlestick injury from a used hollow needle. What is the most appropriate immediate first step at the scene?`,
+  options:[{key:"A",text:"Encourage bleeding and wash the wound with soap and running water, then report"},{key:"B",text:"Suck the wound"},{key:"C",text:"Apply a tight tourniquet"},{key:"D",text:"Ignore it if the source seems low risk"}],answer:"A",
+  explanation:`Encourage the wound to bleed and wash it with soap and running water (do not scrub or suck), then report promptly to occupational health for risk assessment and possible post-exposure prophylaxis.`,
+  ukNote:`Early occupational-health assessment guides any need for PEP and source testing.`},
+
+ {id:"q17",topic:"Emergency",stem:`Minutes after an antibiotic infusion a patient develops widespread urticaria, wheeze, swelling and hypotension. What is the most appropriate first-line drug?`,
+  options:[{key:"A",text:"Intramuscular adrenaline"},{key:"B",text:"Intravenous hydrocortisone first"},{key:"C",text:"Oral antihistamine"},{key:"D",text:"Intravenous adrenaline as the initial route"}],answer:"A",
+  explanation:`This is anaphylaxis. Intramuscular adrenaline is first-line and should be given without delay. Steroids and antihistamines are adjuncts, not the priority. IV adrenaline is reserved for specialist/critical-care settings.`,
+  ukNote:`Stop the trigger, give IM adrenaline, and call for help following the resuscitation algorithm.`,
+  safety:`Adrenaline is the priority — do not delay it for second-line drugs.`},
+
+ {id:"q18",topic:"Clinical Medicine",stem:`A 70-year-old presents with new, fast, irregularly irregular palpitations. They are haemodynamically stable and ECG confirms atrial fibrillation. For rate control, which is an appropriate first-line option in most patients?`,
+  options:[{key:"A",text:"A beta-blocker"},{key:"B",text:"Digoxin as routine first choice in active patients"},{key:"C",text:"Immediate DC cardioversion in all cases"},{key:"D",text:"Aspirin for rate control"}],answer:"A",
+  explanation:`For rate control in AF, a beta-blocker (or a rate-limiting calcium-channel blocker) is usually first-line. Digoxin is more useful in sedentary patients or heart failure. Aspirin does not control rate, and immediate cardioversion is not indicated in a stable patient without a clear plan/anticoagulation assessment.`,
+  ukNote:`Assess stroke risk (e.g. CHA2DS2-VASc) and bleeding risk to guide anticoagulation.`}
+];
+
+/* ---------- state ---------- */
+const KEY="plab_progress_v1";
+let S=load();
+function load(){try{return Object.assign({attempts:{},bookmarks:[],examDate:null,ai:[]},JSON.parse(localStorage.getItem(KEY)||"{}"));}catch(e){return{attempts:{},bookmarks:[],examDate:null,ai:[]};}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function pool(){return QUESTIONS.concat(S.ai);}
+function byId(id){return pool().find(q=>q.id===id);}
+const TOPICS=[...new Set(QUESTIONS.map(q=>q.topic))].sort();
+
+let view="practice", current=null, filterTopic="All topics", practiceMode="all";
+
+/* ---------- view switching ---------- */
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active");view=t.dataset.view;render();
+}));
+document.getElementById("countBtn").addEventListener("click",setExamDate);
+
+function setExamDate(){
+  const cur=S.examDate||"";
+  const v=prompt("Enter your PLAB 1 exam date (YYYY-MM-DD), or leave blank to clear:",cur);
+  if(v===null)return;
+  S.examDate=v.trim()||null;save();renderCountdown();
+}
+function renderCountdown(){
+  const b=document.getElementById("countBtn");
+  if(!S.examDate){b.textContent="Set exam date";return;}
+  const d=Math.ceil((new Date(S.examDate)-new Date())/864e5);
+  b.textContent=isNaN(d)?"Set exam date":(d>=0?`${d} days to exam`:`Exam date passed`);
+}
+
+/* ---------- render ---------- */
+const app=document.getElementById("app");
+function render(){
+  if(view==="practice")renderPractice();
+  else if(view==="mock")renderMock();
+  else if(view==="dashboard")renderDashboard();
+  else if(view==="bookmarks")renderBookmarks();
+}
+
+function filtered(){
+  let qs=pool();
+  if(filterTopic!=="All topics")qs=qs.filter(q=>q.topic===filterTopic);
+  if(practiceMode==="incorrect")qs=qs.filter(q=>S.attempts[q.id]&&!S.attempts[q.id].correct);
+  if(practiceMode==="bookmarks")qs=qs.filter(q=>S.bookmarks.includes(q.id));
+  return qs;
+}
+function pickNext(){
+  const qs=filtered();
+  if(!qs.length)return null;
+  const unseen=qs.filter(q=>!S.attempts[q.id]);
+  const arr=unseen.length?unseen:qs;
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function renderPractice(){
+  const topicOpts=["All topics",...TOPICS].map(t=>`<option ${t===filterTopic?"selected":""}>${t}</option>`).join("");
+  if(!current||!filtered().includes(current))current=pickNext();
+  let body;
+  if(!current){
+    body=`<div class="card"><div class="empty">No questions match this filter yet.${practiceMode!=="all"?` <button class="btn btn-ghost" id="clearMode" style="margin-top:12px">Back to all questions</button>`:""}</div></div>`;
+  }else{
+    body=questionCard(current,false);
+  }
+  app.innerHTML=`
+    <div class="row" style="justify-content:space-between;margin-bottom:18px">
+      <div class="row">
+        <select id="topicSel">${topicOpts}</select>
+        <button class="btn btn-ghost" id="aiBtn">✨ New AI question</button>
+      </div>
+      <select id="modeSel">
+        <option value="all" ${practiceMode==="all"?"selected":""}>All questions</option>
+        <option value="incorrect" ${practiceMode==="incorrect"?"selected":""}>Repeat my incorrect</option>
+        <option value="bookmarks" ${practiceMode==="bookmarks"?"selected":""}>My saved questions</option>
+      </select>
+    </div>
+    ${body}`;
+  document.getElementById("topicSel").onchange=e=>{filterTopic=e.target.value;current=null;render();};
+  document.getElementById("modeSel").onchange=e=>{practiceMode=e.target.value;current=null;render();};
+  const ai=document.getElementById("aiBtn");if(ai)ai.onclick=generateAI;
+  const cm=document.getElementById("clearMode");if(cm)cm.onclick=()=>{practiceMode="all";document.getElementById("modeSel")&&0;current=null;render();};
+  if(current)wireQuestion(current,false);
+}
+
+function questionCard(q,inMock){
+  const saved=S.bookmarks.includes(q.id);
+  return `<div class="card" data-q="${q.id}">
+    <div class="qmeta">
+      <span class="pill ${q.ai?"ai":""}">${q.ai?"AI · ":""}${q.topic}</span>
+      <span class="mono" style="color:var(--muted)">Single best answer</span>
+    </div>
+    <p class="stem">${esc(q.stem)}</p>
+    <div class="opts" data-opts>
+      ${q.options.map(o=>`<button class="opt" data-k="${o.key}"><span class="key">${o.key}</span><span>${esc(o.text)}</span></button>`).join("")}
+    </div>
+    <div class="fb" data-fb></div>
+    ${inMock?"":`<div class="qactions">
+      <button class="btn btn-teal" data-next style="display:none">Next question →</button>
+      <button class="bk ${saved?"on":""}" data-bk>${saved?"★ Saved":"☆ Save"}</button>
+    </div>`}
+  </div>`;
+}
+
+function wireQuestion(q,inMock,onAnswer){
+  const root=app.querySelector(`[data-q="${q.id}"]`)||app;
+  const opts=root.querySelector("[data-opts]"),fb=root.querySelector("[data-fb]");
+  let answered=false;
+  opts.querySelectorAll(".opt").forEach(btn=>btn.addEventListener("click",()=>{
+    if(answered)return;answered=true;
+    const chosen=btn.dataset.k,correct=chosen===q.answer;
+    opts.querySelectorAll(".opt").forEach(o=>{o.disabled=true;if(o.dataset.k===q.answer)o.classList.add("correct");});
+    if(!correct)btn.classList.add("wrong");
+    if(!q.ai){S.attempts[q.id]={chosen,correct,ts:Date.now()};save();}
+    if(!inMock){
+      fb.innerHTML=`<div class="verdict ${correct?"ok":"no"}">${correct?"Correct":"Not quite"} — answer ${q.answer}</div>
+        <div>${esc(q.explanation)}</div>
+        ${q.ukNote?`<div class="ukp"><b>UK practice note:</b> ${esc(q.ukNote)}</div>`:""}
+        ${q.safety?`<div class="safety"><b>Safety:</b> ${esc(q.safety)}</div>`:""}`;
+      fb.classList.add("show");
+      const nx=root.querySelector("[data-next]");nx.style.display="inline-flex";
+      nx.onclick=()=>{current=pickNext();render();};
+    }
+    if(onAnswer)onAnswer(correct,chosen);
+  }));
+  const bk=root.querySelector("[data-bk]");
+  if(bk)bk.addEventListener("click",()=>{
+    const i=S.bookmarks.indexOf(q.id);
+    if(i>=0)S.bookmarks.splice(i,1);else S.bookmarks.push(q.id);
+    save();bk.classList.toggle("on");bk.textContent=S.bookmarks.includes(q.id)?"★ Saved":"☆ Save";
+  });
+}
+
+/* ---------- AI generation ---------- */
+async function generateAI(){
+  const btn=document.getElementById("aiBtn");if(!btn)return;
+  const old=btn.textContent;btn.disabled=true;btn.textContent="Generating…";
+  try{
+    const r=await fetch("/.netlify/functions/generate-question",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({topic:filterTopic})});
+    const data=await r.json();
+    if(data.question&&data.question.options&&data.question.answer){
+      data.question.ai=true;S.ai.push(data.question);save();
+      current=data.question;render();
+    }else{
+      alert(data.error||"Couldn't generate a question right now. The starter bank still works.");
+    }
+  }catch(e){alert("Couldn't reach the AI service. The starter bank still works.");}
+  finally{const b=document.getElementById("aiBtn");if(b){b.disabled=false;b.textContent=old;}}
+}
+
+/* ---------- mock ---------- */
+let mock=null;
+function renderMock(){
+  if(!mock){
+    app.innerHTML=`<div class="card" style="text-align:center">
+      <h2>Mock exam</h2>
+      <p style="color:var(--muted);max-width:46ch;margin:0 auto 18px">Ten questions, answered straight through with no feedback until the end — closer to exam conditions.</p>
+      <button class="btn btn-primary" id="startMock">Start 10-question mock</button>
+    </div>`;
+    document.getElementById("startMock").onclick=()=>{
+      const qs=[...QUESTIONS].sort(()=>Math.random()-.5).slice(0,10);
+      mock={qs,i:0,answers:[]};renderMock();
+    };
+    return;
+  }
+  if(mock.i>=mock.qs.length){return renderMockResults();}
+  const q=mock.qs[mock.i];
+  app.innerHTML=`<div class="row" style="justify-content:space-between;margin-bottom:14px">
+      <span class="mono">Question ${mock.i+1} of ${mock.qs.length}</span>
+      <button class="btn btn-ghost" id="quitMock">Quit</button></div>
+    ${questionCard(q,true)}`;
+  document.getElementById("quitMock").onclick=()=>{mock=null;renderMock();};
+  wireQuestion(q,true,(correct,chosen)=>{
+    mock.answers.push({id:q.id,correct,chosen});
+    setTimeout(()=>{mock.i++;renderMock();},650);
+  });
+}
+function renderMockResults(){
+  const score=mock.answers.filter(a=>a.correct).length,total=mock.qs.length;
+  const review=mock.qs.map((q,i)=>{const a=mock.answers[i];return `<div class="card" style="margin-top:12px">
+    <div class="qmeta"><span class="pill">${q.topic}</span><span class="mono ${a.correct?"":""}" style="color:${a.correct?"var(--good)":"var(--bad)"}">${a.correct?"Correct":"Incorrect"}</span></div>
+    <p class="stem" style="font-size:15px">${esc(q.stem)}</p>
+    <div style="font-size:14px"><b>Answer ${q.answer}:</b> ${esc(q.options.find(o=>o.key===q.answer).text)}. ${esc(q.explanation)}</div></div>`;}).join("");
+  app.innerHTML=`<div class="card" style="text-align:center">
+      <div class="mono">Mock complete</div>
+      <div style="font-family:var(--serif);font-size:46px;color:var(--ink);margin:6px 0">${score}/${total}</div>
+      <div style="color:var(--muted)">${Math.round(score/total*100)}% — ${score>=total*0.6?"a solid pass-level score on this set.":"keep practising the weaker topics."}</div>
+      <button class="btn btn-primary" id="againMock" style="margin-top:16px">New mock</button>
+    </div>
+    <h3 style="margin:24px 0 0">Review</h3>${review}`;
+  document.getElementById("againMock").onclick=()=>{mock=null;renderMock();};
+}
+
+/* ---------- dashboard ---------- */
+function renderDashboard(){
+  const att=Object.entries(S.attempts);
+  const total=att.length, correct=att.filter(([,a])=>a.correct).length;
+  const acc=total?Math.round(correct/total*100):0;
+  // streak: consecutive correct from most recent
+  const ordered=att.map(([id,a])=>a).sort((x,y)=>x.ts-y.ts);
+  let streak=0;for(let i=ordered.length-1;i>=0;i--){if(ordered[i].correct)streak++;else break;}
+  // per-topic
+  const tmap={};att.forEach(([id,a])=>{const q=byId(id);if(!q)return;(tmap[q.topic]=tmap[q.topic]||{t:0,c:0});tmap[q.topic].t++;if(a.correct)tmap[q.topic].c++;});
+  const rows=Object.entries(tmap).sort((a,b)=>(a[1].c/a[1].t)-(b[1].c/b[1].t)).map(([t,v])=>{
+    const p=Math.round(v.c/v.t*100);
+    return `<div class="topic-row"><span class="name">${t}</span><div class="bar"><i style="width:${p}%"></i></div><span class="pct">${p}% · ${v.c}/${v.t}</span></div>`;
+  }).join("")||`<div class="empty">Answer a few questions to see your strong and weak topics.</div>`;
+
+  app.innerHTML=`
+    <div class="stats">
+      <div class="stat"><div class="n">${total}</div><div class="l">Questions attempted</div></div>
+      <div class="stat"><div class="n">${acc}%</div><div class="l">Overall accuracy</div></div>
+      <div class="stat"><div class="n">${streak}</div><div class="l">Current correct streak</div></div>
+      <div class="stat"><div class="n">${S.bookmarks.length}</div><div class="l">Saved questions</div></div>
+    </div>
+    <div class="card"><h3>Accuracy by topic</h3><p style="color:var(--muted);font-size:14px;margin:-4px 0 14px">Weakest at the top — revise these first.</p>${rows}</div>
+    <div class="row" style="margin-top:18px">
+      <button class="btn btn-teal" id="goIncorrect">Practise my incorrect</button>
+      <button class="btn btn-ghost" id="resetP">Reset progress</button>
+    </div>`;
+  document.getElementById("goIncorrect").onclick=()=>{practiceMode="incorrect";filterTopic="All topics";view="practice";current=null;
+    document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.view==="practice"));render();};
+  document.getElementById("resetP").onclick=()=>{if(confirm("Clear all your saved progress in this browser?")){S={attempts:{},bookmarks:[],examDate:null,ai:[]};save();renderCountdown();render();}};
+}
+
+/* ---------- bookmarks ---------- */
+function renderBookmarks(){
+  const qs=S.bookmarks.map(byId).filter(Boolean);
+  if(!qs.length){app.innerHTML=`<div class="card"><div class="empty">No saved questions yet. Tap <b>☆ Save</b> on any question to keep it here.</div></div>`;return;}
+  app.innerHTML=`<div class="row" style="justify-content:space-between;margin-bottom:14px"><h2 style="margin:0">Saved questions</h2>
+    <button class="btn btn-teal" id="practiceSaved">Practise these</button></div>`+
+    qs.map(q=>`<div class="card" style="margin-bottom:12px"><div class="qmeta"><span class="pill ${q.ai?"ai":""}">${q.ai?"AI · ":""}${q.topic}</span></div><p class="stem" style="font-size:15px;margin:0">${esc(q.stem)}</p></div>`).join("");
+  document.getElementById("practiceSaved").onclick=()=>{practiceMode="bookmarks";filterTopic="All topics";view="practice";current=null;
+    document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.view==="practice"));render();};
+}
+
+function esc(s){return String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+
+renderCountdown();render();
+</script>
+</body>
+</html>
