@@ -1,25 +1,34 @@
 // Netlify Function (v2) — secure server-side proxy to Claude.
-// Generates one PLAB 1-style single-best-answer question on demand.
+// Generates ONE PLAB 1-style single-best-answer question, grounded in NICE / NICE CKS.
 // The API key is read from the ANTHROPIC_API_KEY environment variable set in
 // Netlify (Project configuration -> Environment variables). It is NEVER sent to the browser.
 
 const MODEL = "claude-sonnet-4-6";          // update here if the model id changes
 const ANTHROPIC_VERSION = "2023-06-01";
 
-const SYSTEM = `You are a medical educator writing ONE PLAB 1-style single-best-answer (SBA) question for International Medical Graduates revising for UK clinical practice.
+const SYSTEM = `You are a medical educator writing ONE PLAB 1-style single-best-answer (SBA) question for International Medical Graduates, grounded in current UK NICE guidance and NICE Clinical Knowledge Summaries (CKS).
 
-Rules:
-- Clinical content must be standard, safe and aligned with mainstream UK guidance (NICE / BNF / Resuscitation Council) at a general level. Never invent unsafe, fringe or harmful management. Do not give specific dangerous dosing.
-- Use a short, fictional vignette with no real patient identifiers.
-- Provide 4 or 5 options with exactly one single best answer.
-- Keep it educational and appropriate for exam revision only.
+Process:
+1. Use the web_search tool to find the relevant NICE guideline or NICE CKS topic for the subject on nice.org.uk or cks.nice.org.uk. Base the question and the correct answer on that guidance.
+2. Write a short, fictional vignette with no real patient identifiers.
+3. Provide 4 or 5 options with exactly one single best answer.
+4. Explanation: say what the guidance recommends and why the answer is correct, and briefly why the main distractors are not — IN YOUR OWN WORDS. Do NOT copy guideline text verbatim; summarise.
+5. Reference: give the specific guidance you used (name, source, canonical URL).
 
-Respond with ONLY valid minified JSON (no markdown, no commentary) matching exactly:
-{"topic":string,"stem":string,"options":[{"key":"A","text":string},{"key":"B","text":string},{"key":"C","text":string},{"key":"D","text":string}],"answer":"A","explanation":string,"ukNote":string}
+Safety: only standard, safe, mainstream UK management. Never invent unsafe, fringe or harmful management, and never give specific dangerous dosing. Educational, exam-revision use only.
 
-"explanation" says why the answer is correct and briefly why the main distractors are not. "ukNote" is one short sentence on UK practice. Output the JSON and nothing else.`;
+Output ONLY a single minified JSON object as your final message — no markdown, no commentary, nothing else — matching exactly:
+{"topic":string,"stem":string,"options":[{"key":"A","text":string},{"key":"B","text":string},{"key":"C","text":string},{"key":"D","text":string}],"answer":"A","explanation":string,"ukNote":string,"ref":{"label":string,"source":string,"url":string}}
+Where "ref.label" is the specific guideline/topic name (e.g. "Community-acquired pneumonia: antimicrobial prescribing"), "ref.source" is one of "NICE guideline" / "NICE CKS" / "NICE BNF", and "ref.url" is the nice.org.uk or cks.nice.org.uk page you used. Output the JSON and nothing else.`;
+
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "content-type"
+};
 
 export default async (req) => {
+  if (req.method === "OPTIONS") return new Response("", { status: 204, headers: CORS });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   const key = process.env.ANTHROPIC_API_KEY;
@@ -43,9 +52,10 @@ export default async (req) => {
       },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 900,
+        max_tokens: 1500,
         system: SYSTEM,
-        messages: [{ role: "user", content: `Write one fresh SBA question on: ${topic}. Make the scenario different each time.` }]
+        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 2 }],
+        messages: [{ role: "user", content: `Write one fresh SBA question on: ${topic}. Make the scenario different each time, and base it on current NICE / CKS guidance.` }]
       })
     });
 
@@ -54,12 +64,20 @@ export default async (req) => {
       return json({ error: "The AI service returned an error.", detail: t.slice(0, 200) }, 200);
     }
     const data = await r.json();
-    const text = (data.content || []).map(b => b.text || "").join("").trim();
-    const clean = text.replace(/^```(?:json)?/i, "").replace(/```$/g, "").trim();
+    const text = (data.content || []).map(b => (typeof b.text === "string" ? b.text : "")).join("").trim();
+
+    // The model may search first; pull the final JSON object out of the text.
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    const clean = (start >= 0 && end > start) ? text.slice(start, end + 1) : text;
 
     let q;
     try { q = JSON.parse(clean); }
     catch (e) { return json({ error: "Couldn't read the generated question. Please try again." }, 200); }
+
+    if (!q || !Array.isArray(q.options) || !q.answer) {
+      return json({ error: "The generated question was incomplete. Please try again." }, 200);
+    }
 
     q.id = "ai-" + Date.now();
     q.ai = true;
@@ -70,5 +88,5 @@ export default async (req) => {
 };
 
 function json(obj, status) {
-  return new Response(JSON.stringify(obj), { status, headers: { "content-type": "application/json" } });
+  return new Response(JSON.stringify(obj), { status, headers: { "content-type": "application/json", ...CORS } });
 }
