@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pricing — PLAB Bridge IMG</title>
-<meta name="description" content="Simple PLAB 1 preparation pricing for International Medical Graduates. AI question bank grounded in NICE & CKS, with NHS & social care placement support through RMP Recruitment.">
+<meta name="description" content="PLAB 1 preparation pricing for International Medical Graduates. AI question bank grounded in NICE & CKS, live Zoom tuition, and NHS & social care placement support through RMP Recruitment.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -17,44 +17,46 @@
   *{box-sizing:border-box}
   body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.6}
   .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  .wrap-wide{max-width:1280px;margin:0 auto;padding:0 22px}
   a{color:var(--teal-d)}
   nav{background:var(--white);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
-  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+  nav .wrap-wide{display:flex;align-items:center;justify-content:space-between;height:62px}
   .brand{font-family:var(--serif);font-weight:700;font-size:21px;color:var(--ink);text-decoration:none}
   .brand b{color:var(--teal)}
   .nav-links a{margin-left:22px;font-size:14.5px;font-weight:500;text-decoration:none;color:var(--ink)}
   .nav-links a:hover{color:var(--teal)}
-  .btn{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);font-weight:600;font-size:14.5px;
-    text-decoration:none;border-radius:9px;padding:11px 20px;cursor:pointer;border:1.5px solid transparent;transition:.15s}
+  .btn{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);font-weight:600;font-size:14px;
+    text-decoration:none;border-radius:9px;padding:11px 18px;cursor:pointer;border:1.5px solid transparent;transition:.15s}
   .btn.teal{background:var(--teal);color:#fff}.btn.teal:hover{background:var(--teal-d)}
   .btn.gold{background:var(--gold);color:#fff}.btn.gold:hover{background:var(--gold-d)}
   .btn.ghost{background:#fff;color:var(--teal-d);border-color:var(--line)}.btn.ghost:hover{border-color:var(--aqua)}
-  header.hero{text-align:center;padding:62px 0 30px}
+  header.hero{text-align:center;padding:58px 0 26px}
   .eyebrow{font-family:var(--sans);font-size:12.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--teal)}
-  header.hero h1{font-family:var(--serif);font-size:42px;line-height:1.12;margin:14px 0 12px}
-  header.hero p{font-size:17px;color:var(--muted);max-width:60ch;margin:0 auto}
-  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:24px 0 10px}
-  .tier{background:var(--white);border:1.5px solid var(--line);border-radius:16px;padding:26px 24px;display:flex;flex-direction:column}
-  .tier.pop{border-color:var(--teal);box-shadow:0 14px 40px -22px rgba(18,124,135,.5);position:relative}
+  header.hero h1{font-family:var(--serif);font-size:40px;line-height:1.12;margin:14px 0 12px}
+  header.hero p{font-size:16.5px;color:var(--muted);max-width:62ch;margin:0 auto}
+  .tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding:24px 0 10px}
+  .tier{background:var(--white);border:1.5px solid var(--line);border-radius:16px;padding:24px 22px;display:flex;flex-direction:column;
+    box-shadow:0 10px 30px -20px rgba(12,40,46,.4)}
+  .tier.pop{border:2px solid var(--teal);box-shadow:0 16px 42px -20px rgba(18,124,135,.55);position:relative}
   .tier .tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;
-    font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:20px}
-  .tier h3{font-family:var(--serif);font-size:23px;margin:0 0 4px}
-  .tier .who{font-size:13px;color:var(--muted);min-height:38px}
+    font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:5px 13px;border-radius:20px;white-space:nowrap}
+  .tier h3{font-family:var(--serif);font-size:22px;margin:0 0 4px}
+  .tier .who{font-size:13px;color:var(--muted);min-height:40px}
   .price{margin:14px 0 4px}
-  .price .amt{font-family:var(--serif);font-size:38px;font-weight:700;line-height:1}
-  .price .per{font-size:14px;color:var(--muted)}
-  .price .alt{font-size:12.5px;color:var(--muted);margin-top:3px}
-  .tier ul{list-style:none;margin:18px 0 22px;padding:0;flex:1}
-  .tier li{position:relative;padding:7px 0 7px 28px;font-size:14px;border-top:1px solid var(--line)}
+  .price .amt{font-family:var(--serif);font-size:34px;font-weight:700;line-height:1}
+  .price .per{font-size:13.5px;color:var(--muted)}
+  .price .alt{font-size:12.5px;color:var(--muted);margin-top:3px;min-height:18px}
+  .tier ul{list-style:none;margin:16px 0 20px;padding:0;flex:1}
+  .tier li{position:relative;padding:7px 0 7px 26px;font-size:13.5px;border-top:1px solid var(--line)}
   .tier li:first-child{border-top:none}
-  .tier li::before{content:"";position:absolute;left:2px;top:12px;width:13px;height:8px;
+  .tier li::before{content:"";position:absolute;left:1px;top:12px;width:12px;height:7px;
     border-left:2.5px solid var(--teal);border-bottom:2.5px solid var(--teal);transform:rotate(-45deg)}
   .tier li.gold::before{border-color:var(--gold)}
   .tier .btn{width:100%;justify-content:center}
   .place{background:linear-gradient(180deg,#fff,#fbf6ee);border:1.5px solid #efdcc0;border-radius:16px;
     padding:30px 28px;margin:36px 0;display:grid;grid-template-columns:1.5fr 1fr;gap:24px;align-items:center}
   .place .kick{font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d)}
-  .place h2{font-family:var(--serif);font-size:27px;margin:8px 0 8px}
+  .place h2{font-family:var(--serif);font-size:26px;margin:8px 0 8px}
   .place p{color:var(--muted);font-size:15px;margin:0}
   .place .side{text-align:center}
   .faq{padding:18px 0 40px}
@@ -66,14 +68,15 @@
   .qa p{font-size:14px;color:var(--muted);margin:0 0 14px}
   footer{border-top:1px solid var(--line);background:#fff;padding:26px 0;font-size:12.5px;color:var(--muted)}
   footer .disc{max-width:80ch}
-  @media(max-width:880px){.tiers{grid-template-columns:1fr;max-width:420px;margin:0 auto}.place{grid-template-columns:1fr;text-align:center}
-    header.hero h1{font-size:34px}.nav-links a:first-child{display:none}}
+  @media(max-width:1080px){.tiers{grid-template-columns:1fr 1fr;max-width:640px;margin:0 auto}}
+  @media(max-width:620px){.tiers{grid-template-columns:1fr;max-width:420px}.place{grid-template-columns:1fr;text-align:center}
+    header.hero h1{font-size:32px}.nav-links a:first-child{display:none}}
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="wrap">
+  <div class="wrap-wide">
     <a href="/" class="brand">PLAB <b>Bridge IMG</b></a>
     <div class="nav-links">
       <a href="/">Home</a>
@@ -87,25 +90,25 @@
   <div class="wrap">
     <span class="eyebrow">Pricing</span>
     <h1>Prepare smarter. Then get placed.</h1>
-    <p>An AI question bank grounded in NICE &amp; CKS, built with NHS clinical input — and the only PLAB prep with a route into NHS and social care work through RMP Recruitment.</p>
+    <p>An AI question bank grounded in NICE &amp; CKS, live tutor-led Zoom classes, and the only PLAB prep with a route into NHS and social care work through RMP Recruitment.</p>
   </div>
 </header>
 
-<section class="wrap" id="tiers">
+<section class="wrap-wide" id="tiers">
   <div class="tiers">
 
     <!-- STARTER -->
     <div class="tier">
       <h3>Starter</h3>
-      <div class="who">Try the platform and revise the essentials, free.</div>
-      <div class="price"><span class="amt">Free</span><div class="alt">No card needed</div></div>
+      <div class="who">Self-study the essentials at the lowest price.</div>
+      <div class="price"><span class="amt">£18</span><span class="per"> / 3-month access</span><div class="alt">Entry plan</div></div>
       <ul>
-        <li>Curated sample question bank</li>
+        <li>Curated question bank</li>
         <li>Evidence reference (NICE / CKS) on every answer</li>
         <li>Exam-date countdown &amp; progress tracking</li>
         <li>Save questions &amp; review</li>
       </ul>
-      <a href="/app" class="btn ghost">Start free</a>
+      <a href="/#enquire" class="btn ghost">Get started</a>
     </div>
 
     <!-- CORE -->
@@ -129,7 +132,7 @@
     <div class="tier">
       <h3>Career</h3>
       <div class="who">Pass the exam <em>and</em> get help into UK work.</div>
-      <div class="price"><span class="amt">£79</span><span class="per"> / 3-month access</span><div class="alt">PLAB prep + placement support</div></div>
+      <div class="price"><span class="amt">£79</span><span class="per"> / 3-month access</span><div class="alt">PLAB prep + placement</div></div>
       <ul>
         <li class="gold">Everything in Core</li>
         <li class="gold">Placement support with RMP Recruitment</li>
@@ -139,6 +142,22 @@
         <li class="gold">Priority access to new verified content</li>
       </ul>
       <a href="/#enquire" class="btn gold">Apply for Career</a>
+    </div>
+
+    <!-- ZOOM CLASSROOM -->
+    <div class="tier">
+      <h3>Zoom Classroom</h3>
+      <div class="who">Live, tutor-led PLAB 1 classes over Zoom.</div>
+      <div class="price"><span class="amt">£179</span><span class="per"> / month</span><div class="alt">Live teaching + everything</div></div>
+      <ul>
+        <li class="gold">Everything in Career</li>
+        <li class="gold">Live tutor-led Zoom classes</li>
+        <li class="gold">Structured syllabus across the MLA map</li>
+        <li class="gold">Live Q&amp;A &amp; small-group support</li>
+        <li class="gold">Session recordings to rewatch</li>
+        <li class="gold">Exam technique &amp; timing coaching</li>
+      </ul>
+      <a href="/#enquire" class="btn gold">Book a place</a>
     </div>
 
   </div>
@@ -162,8 +181,9 @@
     <h2>Questions</h2>
     <div class="qa">
       <details><summary>How is this different from other PLAB question banks?</summary><p>Every answer is backed by a NICE or CKS reference, the AI questions are grounded in current UK guidance, and the content is verified by a clinician with NHS experience. We're also the only PLAB prep that connects you to real NHS and social care placements through RMP Recruitment.</p></details>
-      <details><summary>What does "3-month access" mean?</summary><p>PLAB 1 preparation typically runs over about three months, so Core and Career are sold as a full exam-cycle of access. You can also pay monthly on Core if you prefer flexibility.</p></details>
-      <details><summary>What is the placement support in the Career plan?</summary><p>CV and interview preparation, plus referral into suitable NHS and social care roles via RMP Recruitment, before and after you qualify. Placement is supported, not guaranteed, and depends on your eligibility and the roles available.</p></details>
+      <details><summary>What's included in the Zoom Classroom plan?</summary><p>Live, tutor-led PLAB 1 classes over Zoom with a structured syllabus across the MLA content map, live Q&amp;A and small-group support, and session recordings to rewatch — plus everything in the Career plan, including placement support. Billed monthly.</p></details>
+      <details><summary>What does "3-month access" mean?</summary><p>PLAB 1 preparation typically runs over about three months, so Starter, Core and Career are sold as a full exam-cycle of access. Core can also be paid monthly, and the Zoom Classroom plan is billed monthly.</p></details>
+      <details><summary>What is the placement support?</summary><p>CV and interview preparation, plus referral into suitable NHS and social care roles via RMP Recruitment, before and after you qualify. Placement is supported, not guaranteed, and depends on your eligibility and the roles available.</p></details>
       <details><summary>Is this affiliated with the GMC or NHS?</summary><p>No. PLAB Bridge IMG is an independent education tool by Webb &amp; Hasham. It is not affiliated with, endorsed by, or operated by the GMC or the NHS.</p></details>
     </div>
   </div>
