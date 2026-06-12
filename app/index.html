@@ -67,6 +67,8 @@
   .fb .verdict.ok{color:var(--good)}.fb .verdict.no{color:var(--bad)}
   .fb .ukp{margin-top:11px;padding:11px 13px;background:var(--mint);border-radius:8px;font-size:13.5px}
   .fb .safety{margin-top:9px;padding:11px 13px;background:#fdeeec;border-radius:8px;font-size:13.5px;color:#7a2a20}
+  .evi{margin-top:11px;padding:11px 13px;background:#eef5f4;border-left:3px solid var(--teal);border-radius:8px;font-size:13px;color:var(--ink)}
+  .evi .src{color:var(--muted)} .evi a{color:var(--teal-d);font-weight:600}
   .ukp b,.safety b{color:inherit}
   .qactions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
   .bk{background:none;border:1.5px solid var(--line);border-radius:8px;padding:11px 16px;cursor:pointer;font-family:var(--sans);font-weight:600;font-size:14px;color:var(--muted)}
@@ -212,14 +214,41 @@ const QUESTIONS = [
   ukNote:`Assess stroke risk (e.g. CHA2DS2-VASc) and bleeding risk to guide anticoagulation.`}
 ];
 
+/* ---------- guideline references (evidence shown with every answer) ---------- */
+const SEED_REFS={
+ q1:{label:"Subarachnoid haemorrhage / thunderclap headache",source:"NICE",url:"https://www.nice.org.uk/search?q=subarachnoid%20haemorrhage"},
+ q2:{label:"Acute coronary syndromes",source:"NICE",url:"https://www.nice.org.uk/search?q=acute%20coronary%20syndromes"},
+ q3:{label:"Community-acquired pneumonia: antimicrobial prescribing",source:"NICE / CKS",url:"https://www.nice.org.uk/search?q=community%20acquired%20pneumonia"},
+ q4:{label:"Type 2 diabetes in adults: management",source:"NICE",url:"https://www.nice.org.uk/search?q=type%202%20diabetes%20in%20adults"},
+ q5:{label:"Suspected cancer: recognition and referral",source:"NICE",url:"https://www.nice.org.uk/search?q=suspected%20cancer%20referral"},
+ q6:{label:"Bell's palsy",source:"NICE CKS",url:"https://www.nice.org.uk/search?q=bell%27s%20palsy"},
+ q7:{label:"Gallstone disease / acute cholecystitis",source:"NICE / CKS",url:"https://www.nice.org.uk/search?q=gallstone%20disease"},
+ q8:{label:"Croup",source:"NICE CKS",url:"https://www.nice.org.uk/search?q=croup"},
+ q9:{label:"Meningococcal disease & sepsis",source:"NICE",url:"https://www.nice.org.uk/search?q=meningococcal%20meningitis%20sepsis"},
+ q10:{label:"Hypertension in pregnancy / pre-eclampsia",source:"NICE",url:"https://www.nice.org.uk/search?q=hypertension%20in%20pregnancy"},
+ q11:{label:"Postpartum haemorrhage",source:"NICE / RCOG",url:"https://www.nice.org.uk/search?q=postpartum%20haemorrhage"},
+ q12:{label:"Depression in adults: treatment and management",source:"NICE",url:"https://www.nice.org.uk/search?q=depression%20in%20adults"},
+ q13:{label:"Decision making & consent; Mental Capacity Act",source:"GMC",url:"https://www.gmc-uk.org/professional-standards/professional-standards-for-doctors/decision-making-and-consent"},
+ q14:{label:"Surgical safety — WHO checklist / NatSSIPs",source:"WHO / NHS England",url:"https://www.nice.org.uk/search?q=surgical%20safety%20checklist"},
+ q15:{label:"Warfarin reversal in major bleeding",source:"NICE / BNF",url:"https://www.nice.org.uk/search?q=warfarin%20reversal%20major%20bleeding"},
+ q16:{label:"Needlestick / sharps injury & post-exposure",source:"NICE CKS / UKHSA",url:"https://www.nice.org.uk/search?q=needlestick%20injury"},
+ q17:{label:"Anaphylaxis: assessment and treatment",source:"Resus Council UK / NICE",url:"https://www.nice.org.uk/search?q=anaphylaxis"},
+ q18:{label:"Atrial fibrillation: diagnosis and management",source:"NICE",url:"https://www.nice.org.uk/search?q=atrial%20fibrillation"}
+};
+// Verified team-authored questions, committed from the dashboard Dr Question Bank.
+// Each carries its own "ref". Paste exported questions between the brackets below.
+const DR_QUESTIONS=[];
+function refOf(q){return q.ref||SEED_REFS[q.id]||null;}
+function eviHtml(q){var r=refOf(q);if(!r)return"";var u=r.url?` · <a href="${esc(r.url)}" target="_blank" rel="noopener">view guidance</a>`:"";return `<div class="evi"><b>Evidence:</b> ${esc(r.label)} <span class="src">(${esc(r.source||"NICE")})</span>${u}</div>`;}
+
 /* ---------- state ---------- */
 const KEY="plab_progress_v1";
 let S=load();
 function load(){try{return Object.assign({attempts:{},bookmarks:[],examDate:null,ai:[]},JSON.parse(localStorage.getItem(KEY)||"{}"));}catch(e){return{attempts:{},bookmarks:[],examDate:null,ai:[]};}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-function pool(){return QUESTIONS.concat(S.ai);}
+function pool(){return QUESTIONS.concat(DR_QUESTIONS).concat(S.ai);}
 function byId(id){return pool().find(q=>q.id===id);}
-const TOPICS=[...new Set(QUESTIONS.map(q=>q.topic))].sort();
+const TOPICS=[...new Set(QUESTIONS.concat(DR_QUESTIONS).map(q=>q.topic))].sort();
 
 let view="practice", current=null, filterTopic="All topics", practiceMode="all";
 
@@ -329,7 +358,8 @@ function wireQuestion(q,inMock,onAnswer){
       fb.innerHTML=`<div class="verdict ${correct?"ok":"no"}">${correct?"Correct":"Not quite"} — answer ${q.answer}</div>
         <div>${esc(q.explanation)}</div>
         ${q.ukNote?`<div class="ukp"><b>UK practice note:</b> ${esc(q.ukNote)}</div>`:""}
-        ${q.safety?`<div class="safety"><b>Safety:</b> ${esc(q.safety)}</div>`:""}`;
+        ${q.safety?`<div class="safety"><b>Safety:</b> ${esc(q.safety)}</div>`:""}
+        ${eviHtml(q)}`;
       fb.classList.add("show");
       const nx=root.querySelector("[data-next]");nx.style.display="inline-flex";
       nx.onclick=()=>{current=pickNext();render();};
@@ -393,7 +423,7 @@ function renderMockResults(){
   const review=mock.qs.map((q,i)=>{const a=mock.answers[i];return `<div class="card" style="margin-top:12px">
     <div class="qmeta"><span class="pill">${q.topic}</span><span class="mono ${a.correct?"":""}" style="color:${a.correct?"var(--good)":"var(--bad)"}">${a.correct?"Correct":"Incorrect"}</span></div>
     <p class="stem" style="font-size:15px">${esc(q.stem)}</p>
-    <div style="font-size:14px"><b>Answer ${q.answer}:</b> ${esc(q.options.find(o=>o.key===q.answer).text)}. ${esc(q.explanation)}</div></div>`;}).join("");
+    <div style="font-size:14px"><b>Answer ${q.answer}:</b> ${esc(q.options.find(o=>o.key===q.answer).text)}. ${esc(q.explanation)}</div>${eviHtml(q)}</div>`;}).join("");
   app.innerHTML=`<div class="card" style="text-align:center">
       <div class="mono">Mock complete</div>
       <div style="font-family:var(--serif);font-size:46px;color:var(--ink);margin:6px 0">${score}/${total}</div>
