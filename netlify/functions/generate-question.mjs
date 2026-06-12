@@ -28,7 +28,7 @@ const CORS = {
 };
 
 export default async (req) => {
-  if (req.method === "OPTIONS") return new Response("", { status: 204, headers: CORS });
+  if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   const key = process.env.ANTHROPIC_API_KEY;
